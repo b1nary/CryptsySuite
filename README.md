@@ -8,7 +8,7 @@ An awesome Chrome extension to make Cryptsy.com more comfortable. The extension 
 * Show current price & market links on "Trade History"
 * Filter history by "Buy" and "Sell"
 * Click on the Time (top-left) to get your "Estimated Portfolio Value"
-* Sort balance screen
+* Filter "Account Balances"
 * Use _watchers_ to make notes (probably actually a watcher later, now just notes)
 
 ## Donate
