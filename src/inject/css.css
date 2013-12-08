@@ -1,0 +1,45 @@
+*[data-tooltip] {
+  -webkit-transition: all 0.2s ease-in-out;
+  -moz-transition: all 0.2s ease-in-out;
+  -o-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+*[data-tooltip]:hover {
+  position: relative;
+}
+*[data-tooltip]:hover:after {
+  margin-top: -0.3em;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  padding: 6px 12px;
+  text-decoration: none;
+  max-width: 300px;
+  min-width: 100px;
+  background-color: #222222;
+  color: #dddddd;
+  opacity: 0.9;
+  content: attr(data-tooltip);
+  margin-left: 13px;
+  border-radius: 10px;
+  font-size:12px;
+  font-weight:bold;
+}
+*[data-tooltip]:hover:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-left: 4px;
+  opacity: 0.9;
+  width: 0px;
+  height: 0px;
+  border-style: solid;
+  border-width: 7px 10px 7px 0;
+  border-color: transparent #222222 transparent transparent;
+  margin-top: 4px;
+}
+
+#sidebar .toggle_sidebar { float:right; color:#555; }
+#sidebar .toggle_sidebar_hidden { float:left; margin-top:1px; margin-right:6px; }
+#hide_markets { display:block; text-align: center; }
