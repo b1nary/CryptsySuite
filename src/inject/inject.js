@@ -23,6 +23,7 @@ chrome.storage.local.get("gs_settings", function(items) {
 			},
 			"watcher_enabled": true,
 			"watcher_speed": 5000,
+			"title_refresh": 3000,
 			"watchlist": {},
 			"ajaxify": false
 		}
@@ -50,21 +51,27 @@ chrome.storage.local.get("gs_settings", function(items) {
 			if( $(this).attr('id') != null ){
 				var _id = $(this).attr('id').toString().split("_")[1]
 				var val = $.trim($(this).text().replace(/  /g, " ")).split(" ")
-				markets[val[0]] = { 'price': val[1], 'id': _id }
+				var act = "none"; if($(this).find('span.leftmarketinfo').first().hasClass('glyphicon-arrowdown')){ act = "sell"; }
+				if($(this).find('span.leftmarketinfo').first().hasClass('glyphicon-arrowup')){ act = "buy"; }
+				markets[val[0]] = { 'price': val[1], 'id': _id, 'action': act }
 			}
 		});
 		$(".moduletable-ltc-markets .nav-list li a").each(function(){
 			if( $(this).attr('id') != null ){
 				var _id = $(this).attr('id').toString().split("_")[1]
 				var val = $.trim($(this).text().replace(/  /g, " ")).split(" ")
-				markets[val[0]] = { 'price': val[1], 'id': _id }
+				var act = "none"; if($(this).find('span.leftmarketinfo').first().hasClass('glyphicon-arrowdown')){ act = "sell"; }
+				if($(this).find('span.leftmarketinfo').first().hasClass('glyphicon-arrowup')){ act = "buy"; }
+				markets[val[0]] = { 'price': val[1], 'id': _id, 'action': act }
 			}
 		});
 		$(".moduletable-xpm-markets .nav-list li a").each(function(){
 			if( $(this).attr('id') != null ){
 				var _id = $(this).attr('id').toString().split("_")[1]
 				var val = $.trim($(this).text().replace(/  /g, " ")).split(" ")
-				markets[val[0]] = { 'price': val[1], 'id': _id }
+				var act = "none"; if($(this).find('span.leftmarketinfo').first().hasClass('glyphicon-arrowdown')){ act = "sell"; }
+				if($(this).find('span.leftmarketinfo').first().hasClass('glyphicon-arrowup')){ act = "buy"; }
+				markets[val[0]] = { 'price': val[1], 'id': _id, 'action': act }
 			}
 		});
 	}
@@ -131,6 +138,29 @@ chrome.storage.local.get("gs_settings", function(items) {
 
 	$(document).ready(function(){
 
+		/*
+		*	Breakout Monitor
+		
+		$("body").append('<a id="breakout_monitor" style="position:fixed; bottom:10px; left:10px;">Breakout Monitor</a>')
+		$("#breakout_monitor").on('click', function(){
+			$("#content").animate({ width: '0%' }, 700, function(){ $(this).remove() })
+			$("#sidebar, #sidebar .moduletable, #sidebar .btc-markets-wrap, #sidebar .ltc-markets-wrap, #sidebar .xpm-markets-wrap").animate({ width: '100%' }, 700);
+		})*/ 
+
+		/*
+		*	Show some love
+		*/
+		$("body").append('<a href="#love" style="color:#BF5145; font-size:22px; position:fixed; top:10px; right:18px; z-index:9999; text-shadow:0px 0px 26px white, 0px 0px 8px white">&hearts;</a>')
+		$("a[href='#love']").on('click', function(){
+			$("#showsomelove").remove()
+			window.scrollTo(0, 0)
+			$("#content .working-contents").prepend('<div style="padding:30px 0px; font-size:130%" id="showsomelove">'+
+				'<p><big>Hi there my name is Roman.</big></p>'+
+				'<p>I wanted some more comfort to make cryptsy.com even more fun, so i created this extension and added a few small but useful features.</p>'+
+				'<p>If you want to chat, contact me on Twitter <a href="https://twitter.com/talkb1nary">@talkb1nary</a>'+
+				'<p>Also feel free to send some love in my direction :)</p>'+
+				'<p>My trade key <strong>26b13a60f5cd3aa78e4c29328fb9980bef963e9e</strong></p></div>')
+		});
 		/*
 		* 	Current stack
 		*/
@@ -392,8 +422,8 @@ chrome.storage.local.get("gs_settings", function(items) {
 			$(".panel-watch-list").find('.panel-heading').html('<span class="glyphicon glyphicon-account-balances"></span>&nbsp;Watchlist')
 			$(".panel-watch-list").find('table').remove()
 			$(".panel-watch-list .dataTables_scrollBody").css('height','auto').append('<table cellpadding="0" cellspacing="0" border="0" class="table table2 table-striped dataTable" id="watchlist" style="margin-left: 0px; width: 100%; font-size:0.9em;"></table>')
-			$(".panel-watch-list .dataTables_scrollBody table").append('<thead><tr><th role="columnheader" class="sorting_disabled">Action</th><th class="sorting_disabled" role="columnheader">Value</th><th></th></tr></thead><tbody>'+
-				'<tr><td><select id="add_watcher_action"><option value="none">Just watch</option><option value="lt">Less than</option><option value="gt">Grater than</option></select></td><td><input id="add_watcher_value" type="text"></td><td><input type="button" id="add_watcher_submit" value="Add watcher" /></td></tr></tbody>')
+			$(".panel-watch-list .dataTables_scrollBody table").append('<thead><tr><th role="columnheader" class="sorting_disabled" style="width:100px;">Action</th><th class="sorting_disabled" role="columnheader" style="width:100%;">Value</th><th style="width:100px;"></th></tr></thead><tbody>'+
+				'<tr><td><select id="add_watcher_action"><option value="none">Just watch</option><option value="lt">Less than</option><option value="gt">Grater than</option><option value="note">Note</option></select></td><td><input id="add_watcher_value" style="width:100%" type="text"></td><td><input type="button" id="add_watcher_submit" value="Add watcher" /></td></tr></tbody>')
 
 			var market = $.trim($(".panel-default").first().find('.panel-heading').text()).split(" ")[1].split("Graph")[0]
 
@@ -403,8 +433,9 @@ chrome.storage.local.get("gs_settings", function(items) {
 					var _val = _set[i]['value'];
 					var _act = _set[i]['action'];
 					if(_act == "gt"){ _act = "Greater than"; }
-					if(_act == "lt"){ _act = "Less than"; }
-					if(_act == "none"){ _act = "Just watch"; }
+					else if(_act == "lt"){ _act = "Less than"; }
+					else if(_act == "none"){ _act = "Just watch"; }
+					else if(_act == "note"){ _act = "Note"; }
 					$(".panel-watch-list .dataTables_scrollBody table tbody")
 					.prepend('<tr><td>'+_act+'</td><td>'+_val+'</td><td><a class="remove_watcher" data-act="'+_set[i]['action']+'" data-val="'+_set[i]['value']+'" href="#remove_watcher">X</a></td></tr>')
 				}
@@ -415,6 +446,11 @@ chrome.storage.local.get("gs_settings", function(items) {
 				var _action = $("#add_watcher_action").val()
 				var _value = $("#add_watcher_value").val()
 
+				if(_action == "gt"){ _action = "Greater than"; }
+				else if(_action == "lt"){ _action = "Less than"; }
+				else if(_action == "none"){ _action = "Just watch"; }
+				else if(_action == "note"){ _action = "Note"; }
+
 				if(settings["watchlist"][market] == null)
 					settings["watchlist"][market] = []
 
@@ -424,6 +460,21 @@ chrome.storage.local.get("gs_settings", function(items) {
 				save_setting()
 				re_watcher_listener(market)
 			});
+
+			/* Change title */
+			index_markets();
+			var wait_for_content = window.setInterval(function(){
+				index_markets();
+				$("title").html(market+' '+markets[market]["price"])
+				if($("#favicon").length == 0){ $("head").append('<link id="favicon" rel="shortcut icon" type="image/png" href="" />') }
+				if(markets[market]["action"] == "buy"){
+					$("#favicon").attr("href","data:image/vnd.microsoft.icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAA/2YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREREBEREREBEREQAREREAEREREAEREAERERERABEAEREREREQAAEREREREREAERERERERERERERERERERERERERERERERERERH//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA7/cAAOfnAADzzwAA+Z8AAPw/AAD+fwAA//8AAP//AAD//wAA")
+				} else if(markets[market]["action"] == "sell"){
+					$("#favicon").attr("href","data:image/vnd.microsoft.icon;base64,AAABAAEAEBAQAAEABAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAMwD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEQAAAAAAAAEREAAAAAAAEQARAAAAAAEQAAEQAAAAEQAAABEAAAAQAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAP//AAD//wAA//8AAP5/AAD8PwAA+Z8AAPPPAADn5wAA7/cAAP//AAD//wAA//8AAP//AAD//wAA")
+				} else {
+					$("#favicon").remove()
+				}
+			}, settings["title_refresh"]);
 
 		}
 

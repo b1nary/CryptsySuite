@@ -43,3 +43,5 @@
 #sidebar .toggle_sidebar { float:right; color:#555; }
 #sidebar .toggle_sidebar_hidden { float:left; margin-top:1px; margin-right:6px; }
 #hide_markets { display:block; text-align: center; }
+.alert-black { transition: all .2s ease-in-out; }
+.alert-black:hover { background-color: #A8ADA7; }
