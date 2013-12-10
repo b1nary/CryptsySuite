@@ -21,7 +21,7 @@ chrome.storage.local.get("gs_settings", function(items) {
 					"Cryptsy": false
 				}
 			},
-			"watcher_enabled": true,
+			"watcher_enabled": false,
 			"watcher_speed": 5000,
 			"title_refresh": 3000,
 			"watchlist": {},
