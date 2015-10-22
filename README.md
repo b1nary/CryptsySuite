@@ -1,5 +1,7 @@
 # Cryptsy Suite
 
+**Note: I dont use Cryptsy anymore, and you should nether.**
+
 An awesome Chrome extension to make Cryptsy.com more comfortable. The extension fully intigrates into the interface of cryptsy, there is no config page or something like this, just a few more options and gimmics on the interface itself.
 
 ## Features
